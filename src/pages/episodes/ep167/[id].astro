@@ -1,0 +1,88 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from "../../../layouts/Layout.astro"
+
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+  const cards: CollectionEntry<'ep167'>[] = await getCollection('ep167');
+  console.log(cards)
+  return cards.map((card: CollectionEntry<'ep167'>)  => ({
+    params: { id: card.id },
+    props: { card  },
+  }));
+}
+// 2. For your template, you can get the entry directly from the prop
+const { card } = Astro.props;
+console.log(card.data)
+const cards: CollectionEntry<'ep167'>[] = await getCollection('ep167');
+
+const audioSrc = "/ep167/" + card.id + ".mp3"
+let showBackButton = false
+let showFwdButton = false
+const nextItem = "/episodes/ep167/" + (parseInt(card.id) + 1)
+const prevItem = "/episodes/ep167/" + (parseInt(card.id) - 1)
+
+if (parseInt(card.id) >= 0 && parseInt(card.id) < cards.length - 1) {
+  showFwdButton = true
+  showBackButton = true
+}
+if (parseInt(card.id) == cards.length - 1) {
+  showBackButton = true
+}
+---
+
+<Layout>
+  <a class="btn btn-block" href="/episodes/ep167">Go To All Lists</a>
+  <div class="flex justify-center items-center max-w-full h-screen">
+    { ( showBackButton) ? <a class="cursor-pointer" href={prevItem}><span class="gridicons--chevron-left"></span></a> : ''}
+
+<div class="card card-xl sm:max-w-sm w-full h-[450px]">
+  <div class="card-body">
+    <div class="flex flex-col items-center">
+      <h1 id="cardTitle" class="text-base-content text-4xl" data-front={card.data.front} data-back={card.data.back}></h1>
+      <audio src={audioSrc} />
+      <a class="cursor-pointer" id="playbtn"><span class="gridicons--play"></span></a>
+    </div>
+  </div>
+  <div class="card-footer text-center">
+    <button class="btn btn-primary btn-block" id="Translate" data-status="en">English</button>
+  </div>
+</div>
+{ ( showFwdButton) ? <a class="cursor-pointer" href={nextItem}><span class="gridicons--chevron-right"></span></a> : ''}
+</div>
+</Layout>
+<script>
+    const h1Text = document.getElementById("cardTitle")
+    const audioElement = document.querySelector("audio");
+    if (h1Text != null) {
+      let msg = h1Text.dataset.front;
+      h1Text.innerText = msg
+
+    }
+
+    const playBtn = document.getElementById('playbtn');
+    playBtn?.addEventListener('click', () => {
+      console.log('lay1!!!')
+      audioElement?.play()
+    })
+
+    const translateBtn = document.getElementById("Translate")
+    translateBtn?.addEventListener('click', () => {
+      if (h1Text != null) {
+        if (translateBtn.dataset.status == "en"){
+            let msg = h1Text.dataset.back;
+            h1Text.innerText = msg
+            translateBtn.innerText = 'French'
+            translateBtn.dataset.status = 'fr'
+        } else {
+            let msg = h1Text.dataset.front;
+            h1Text.innerText = msg
+            translateBtn.innerText = 'English'
+            translateBtn.dataset.status = 'en'
+        }
+        
+      }
+    })
+
+</script>
