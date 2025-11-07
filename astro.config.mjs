@@ -7,6 +7,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://shariqt.github.io',
   base: '/french-cards',
+  output: 'static',
   vite: {
     plugins: [tailwindcss()]
   }
