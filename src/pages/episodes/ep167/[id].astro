@@ -20,8 +20,8 @@ const cards: CollectionEntry<'ep167'>[] = await getCollection('ep167');
 const audioSrc = "/ep167/" + card.id + ".mp3"
 let showBackButton = false
 let showFwdButton = false
-const nextItem = "/episodes/ep167/" + (parseInt(card.id) + 1)
-const prevItem = "/episodes/ep167/" + (parseInt(card.id) - 1)
+const nextItem = import.meta.env.BASE_URL + "/episodes/ep167/" + (parseInt(card.id) + 1)
+const prevItem = import.meta.env.BASE_URL + "/episodes/ep167/" + (parseInt(card.id) - 1)
 
 if (parseInt(card.id) >= 0 && parseInt(card.id) < cards.length - 1) {
   showFwdButton = true
